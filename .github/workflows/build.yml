@@ -9,18 +9,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Build firmware (ESPHome CLI)
+      - name: Compile ESPHome firmware
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/config \
-            -it ghcr.io/esphome/esphome:latest \
+            ghcr.io/esphome/esphome:latest \
             compile uart-bridge.yaml
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
-          name: firmware
-          path: .esphome/build/**/*.bin
+          name: esp32-firmware
+          path: |
+            .esphome/build/**/*.bin
