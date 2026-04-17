@@ -1,0 +1,50 @@
+esphome:
+  name: uart-bridge
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: "umnicky"
+  password: "klokani.kone.sabaky.123"
+
+logger:
+
+api:
+
+ota:
+
+mqtt:
+  broker: 10.0.0.100
+
+uart:
+  id: uart_bus
+  tx_pin: GPIO25
+  rx_pin: GPIO26
+  baud_rate: 9600
+
+interval:
+  - interval: 200ms
+    then:
+      - lambda: |-
+          while (id(uart_bus).available()) {
+            std::string line = "";
+            char c;
+            while (id(uart_bus).available()) {
+              id(uart_bus).read_byte(&c);
+              if (c == '\n') {
+                break;
+              }
+              line += c;
+            }
+            if (line.length() > 0) {
+              id(uart_mqtt).publish_state(line);
+            }
+          }
+
+text_sensor:
+  - platform: template
+    name: "UART MQTT"
+    id: uart_mqtt
