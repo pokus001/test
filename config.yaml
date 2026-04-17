@@ -30,20 +30,19 @@ interval:
     then:
       - lambda: |-
           while (id(uart_bus).available()) {
-            std::string line = "";
-            char c;
-            while (id(uart_bus).available()) {
-              id(uart_bus).read_byte(&c);
+            uint8_t c;
+            if (id(uart_bus).read_byte(&c)) {
+              static std::string line;
               if (c == '\n') {
-                break;
+                if (!line.empty()) {
+                  id(uart_mqtt).publish_state(line);
+                  line.clear();
+                }
+              } else {
+                line += (char)c;
               }
-              line += c;
-            }
-            if (line.length() > 0) {
-              id(uart_mqtt).publish_state(line);
             }
           }
-
 text_sensor:
   - platform: template
     name: "UART MQTT"
