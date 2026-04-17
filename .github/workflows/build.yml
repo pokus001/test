@@ -17,7 +17,7 @@ jobs:
           docker run --rm \
             -v ${{ github.workspace }}:/config \
             ghcr.io/esphome/esphome:latest \
-            compile uart-bridge.yaml
+            compile config.yaml
 
       - name: Upload firmware
         uses: actions/upload-artifact@v4
