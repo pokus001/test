@@ -23,6 +23,4 @@ jobs:
         with:
           name: firmware
           path: |
-            **/firmware*.bin
-            **/*.ota.bin
-            **/*.factory.bin
+             /config/.esphome/build/uart-bridge/.pioenvs/uart-bridge/firmware.factory.bin
